@@ -1,4 +1,8 @@
-const express = require('express'); const cors = require('cors'); const { Pool } = require('pg'); // <-- On utilise 'pg' pour PostgreSQL const app = express(); const PORT = 3000;
+const express = require('express');
+const cors = require('cors'); 
+const { Pool } = require('pg'); // <-- On utilise 'pg' pour PostgreSQL 
+const app = express(); 
+const PORT = 3000;
 
 app.use(cors());
 app.use(express.json());
