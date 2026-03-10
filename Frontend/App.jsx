@@ -8,6 +8,7 @@ const App = () => {
   const [alarmes, setAlarmes] = useState([]);
   const [viewMode, setViewMode] = useState('live');
   const [error, setError] = useState(null);
+  const [fleetPositions, setFleetPositions] = useState([]);//changer par Abdel 
 
   // ADRESSE DE LA VM
   const API_URL = "http://15.237.251.60:3000";
@@ -27,6 +28,54 @@ const App = () => {
     };
     chargerFlotte();
   }, []);
+  //changer par Abdel de
+  const chargerTouteLaFlotte = async () => {
+  try {
+    if (!vehicules.length) return;
+
+    const results = await Promise.all(
+      vehicules.map(async (v) => {
+        try {
+          const res = await fetch(`${API_URL}/api/devices/${v.id}/latest`);
+          if (!res.ok) return null;
+          const data = await res.json();
+
+          return {
+            id: v.id,
+            nom: v.nom,
+            imei: v.imei,
+            latitude: parseFloat(data.latitude || data.lat),
+            longitude: parseFloat(data.longitude || data.lng),
+            vitesse: parseFloat(data.vitesse || data.speed || 0),
+            allumage:
+              data.allumage === "t" ||
+              data.allumage === true ||
+              data.allumage === 1 ||
+              data.allumage === "on" ||
+              parseFloat(data.vitesse || data.speed || 0) > 0,
+          };
+        } catch {
+          return null;
+        }
+      })
+    ); 
+
+    setFleetPositions(results.filter(Boolean));
+  } catch (err) {
+    console.error("Erreur flotte live:", err.message);
+  }
+};
+useEffect(() => {
+  if (!vehicules.length) return;
+
+  chargerTouteLaFlotte();
+
+  const intervalleFlotte = setInterval(() => {
+    chargerTouteLaFlotte();
+  }, 5000);
+
+  return () => clearInterval(intervalleFlotte);
+}, [vehicules]);// jusqu'a la
 
   // --- CHARGEMENT DES ALARMES ---
   const chargerAlarmes = async (id) => {
@@ -208,5 +257,6 @@ const styles = {
   empty: { flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b', flexDirection: 'column' },
   loading: { display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center' }
 };
+
 
 export default App;
