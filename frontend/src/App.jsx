@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import MapComponent from "./MapComponent";
+import MetricsCharts from "./MetricsCharts";
 
 const App = () => {
   const [vehicules, setVehicules] = useState([]);
@@ -165,7 +166,7 @@ const App = () => {
               <h3 style={styles.statsTitle}>Statistiques Globales</h3>
             </div>
             <div style={styles.statsPlaceholder}>
-               <p style={{fontSize: '11px', color: '#64748b', margin: 0}}>Zone réservée Rôle 4 (Graphiques Recharts)</p>
+              <MetricsCharts lastPos={lastPos} allPositions={allPositions} selectedId={selectedId} />
             </div>
           </div>
         </aside>
