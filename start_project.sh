@@ -136,17 +136,16 @@ FRONTEND_JSON
 fi
 
 # Installer les dépendances du frontend
-if [ ! -d "$SCRIPT_DIR/frontend/node_modules" ]; then
-    echo -e "${YELLOW}[INFO]${NC} Installation des dépendances du frontend..."
-    cd "$SCRIPT_DIR/frontend"
-    npm install > ../logs/frontend_install.log 2>&1
-    if [ $? -ne 0 ]; then
-        echo -e "${RED}[ERROR]${NC} Échec de l'installation des dépendances du frontend."
-        cat ../logs/frontend_install.log
-        exit 1
-    fi
-    cd "$SCRIPT_DIR"
+# Toujours vérifier et installer/mettre à jour les dépendances du frontend
+echo -e "${YELLOW}[INFO]${NC} Vérification et installation des dépendances du frontend..."
+cd "$SCRIPT_DIR/frontend"
+npm install > ../logs/frontend_install.log 2>&1
+if [ $? -ne 0 ]; then
+    echo -e "${RED}[ERROR]${NC} Échec de l'installation des dépendances du frontend."
+    cat ../logs/frontend_install.log
+    exit 1
 fi
+cd "$SCRIPT_DIR"
 
 # Lancer le frontend en mode développement
 cd "$SCRIPT_DIR/frontend"
